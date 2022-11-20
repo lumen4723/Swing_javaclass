@@ -1,4 +1,4 @@
-package project;
+package Swing_javaclass;
 
 public class tape {
     

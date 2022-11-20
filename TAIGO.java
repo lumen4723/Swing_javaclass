@@ -1,4 +1,4 @@
-package project;
+package Swing_javaclass;
 
 import java.awt.*;
 import java.awt.event.*;
