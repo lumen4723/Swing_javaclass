@@ -29,16 +29,22 @@ public class TAIGO {
     int score = 0;
     File sounddung;
     File soundddack;
+    File soundsong;
     AudioInputStream dung;
     AudioInputStream ddack;
+    AudioInputStream song;
+    Clip clip;
 
-    ArrayList<circle> circles = new ArrayList<circle>();
+    // note객체를 생성
+    ArrayList<circle> notesong = new ArrayList<circle>(); //여기에 tape.block들어감
+    int songlength = (3 * 60 + 50) * 600; // 3분 50초 여기에 tape.length들어감
 
     public TAIGO() {
 
         try{
             sounddung = new File("./src/Swing_javaclass/music/dung.wav");
             soundddack = new File("./src/Swing_javaclass/music/ddack.wav");
+            soundsong = new File("./src/Swing_javaclass/music/ROKI.wav"); // 여기에 tape.song들어감
         }
         catch(Exception e){
             e.printStackTrace();
@@ -59,12 +65,22 @@ public class TAIGO {
     public void go() {
         int timecounter = -1; // -1: none, 0: reset, other: count
 
+        // 노트 객체의 리스트를 사용가능한 형태로 변환
         for(int i = 0; i < 100; i++) {
-            circles.add(new circle(i*300, 4 + i%2, i%4));
+            notesong.add(new circle(i*300, 4 + i%2, i%4));
+        }
+
+        try{
+            song = AudioSystem.getAudioInputStream(soundsong);
+            clip = AudioSystem.getClip();
+            clip.open(song);
+            clip.start();
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
 
         while(true) {
-            Iterator<circle> it = circles.iterator();
+            Iterator<circle> it = notesong.iterator();
             while(it.hasNext()) {
                 circle c = it.next();
 
@@ -113,6 +129,13 @@ public class TAIGO {
                 else if (timecounter == 0) {
                     hitNotice = 0;
                     timecounter = -1;
+                }
+
+                if(songlength > 0) {
+                    songlength -= speed;
+                }
+                else {
+                    break;
                 }
 
             } catch (InterruptedException e) {}
@@ -203,8 +226,8 @@ public class TAIGO {
             g.fillArc(145, 235, 120, 120, 270, 180);
 
             // 태고 블럭노트
-            for(int i=0; i < circles.size(); i++){
-                circle c = circles.get(i);
+            for(int i=0; i < notesong.size(); i++){
+                circle c = notesong.get(i);
                 g.setColor(c.color);
                 g.fillOval(c.x, c.y, c.r, c.r);
 
@@ -254,7 +277,7 @@ public class TAIGO {
         void playsound_dung(){
             try{
                 dung = AudioSystem.getAudioInputStream(sounddung);
-                Clip clip = AudioSystem.getClip();
+                clip = AudioSystem.getClip();
                 clip.stop();
                 clip.open(dung);
                 clip.start();
@@ -265,7 +288,7 @@ public class TAIGO {
         void playsound_ddack(){
             try{
                 ddack = AudioSystem.getAudioInputStream(soundddack);
-                Clip clip = AudioSystem.getClip();
+                clip = AudioSystem.getClip();
                 clip.stop();
                 clip.open(ddack);
                 clip.start();

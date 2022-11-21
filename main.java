@@ -6,5 +6,7 @@ public class main {
         // index.start();
         TAIGO taigo = new TAIGO();
         taigo.go();
+
+        System.out.println("완료되었음");
     }
 }
