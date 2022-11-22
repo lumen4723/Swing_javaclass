@@ -10,7 +10,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class TAIGO {
@@ -28,14 +27,18 @@ public class TAIGO {
     int gauge = 0;
     int score = 0;
     ArrayList<circle> blocks;
+
     int songlength;
+    int songnowtime = 0;
+
     File sounddung;
     File soundddack;
     File soundsong;
     AudioInputStream dung;
     AudioInputStream ddack;
     AudioInputStream song;
-    Clip clip;
+    Clip songclip;
+    Clip hitclip;
     
     public TAIGO(noteTape tape) {
         // blocks = new ArrayList<circle>(); //여기에 tape.block들어감
@@ -68,10 +71,10 @@ public class TAIGO {
 
         try{
             song = AudioSystem.getAudioInputStream(soundsong);
-            clip = AudioSystem.getClip();
-            clip.open(song);
-            clip.start();
-            songlength = (int) (clip.getMicrosecondLength() / 1000);
+            songclip = AudioSystem.getClip();
+            songclip.open(song);
+            songclip.start();
+            songlength = (int) (songclip.getMicrosecondLength() / 1000);
         }catch(Exception ex){
             ex.printStackTrace();
         }
@@ -107,7 +110,7 @@ public class TAIGO {
                 }
                 else if( 330 > predict ) {
                     it.remove();
-                    gauge -= 5 - (combo < 60 ? combo : 60) / 15;
+                    gauge -= 2;
                     gauge = gauge < 0 ? 0 : gauge;
                     combo = 0;
                     hitNotice = 3;
@@ -128,11 +131,12 @@ public class TAIGO {
                     timecounter = -1;
                 }
 
-                if(songlength > 0) {
-                    songlength -= 16;
-                    System.out.println(songlength);
+                if(songnowtime < songlength) {
+                    songnowtime = (int) (songclip.getMicrosecondPosition() / 1000);
+                    //System.out.println(songnowtime + " : " + songlength);
                 }
                 else {
+                    songclip.stop();
                     break;
                 }
 
@@ -149,7 +153,7 @@ public class TAIGO {
             super.paintComponent(g);
 
             int WIDTH = 1010;
-            // int HEIGHT = 720;
+            int HEIGHT = 720;
 
             //태고 노트
             g.setColor(Color.darkGray);
@@ -271,6 +275,16 @@ public class TAIGO {
                 g.setFont(new Font("맑은 고딕", 1, 30));
                 g.drawString("에구", 360, 190);
             }
+
+            g.setColor(Color.black);
+            g.setFont(new Font("맑은 고딕", 1, 30));
+            g.drawString("ESC : 강제 중단", 10, HEIGHT / 2 + 100);
+            g.setColor(Color.black);
+            g.setFont(new Font("맑은 고딕", 1, 30));
+            g.drawString("A, F : 딱 (파란색)", 10, HEIGHT / 2 + 150);
+            g.setColor(Color.black);
+            g.setFont(new Font("맑은 고딕", 1, 30));
+            g.drawString("S, D : 쿵 (빨간색)", 10, HEIGHT / 2 + 200);
         }
     }
 
@@ -278,10 +292,10 @@ public class TAIGO {
         void playsound_dung(){
             try{
                 dung = AudioSystem.getAudioInputStream(sounddung);
-                clip = AudioSystem.getClip();
-                clip.stop();
-                clip.open(dung);
-                clip.start();
+                hitclip = AudioSystem.getClip();
+                hitclip.stop();
+                hitclip.open(dung);
+                hitclip.start();
             }catch(Exception ex){
                 ex.printStackTrace();
             }
@@ -289,10 +303,10 @@ public class TAIGO {
         void playsound_ddack(){
             try{
                 ddack = AudioSystem.getAudioInputStream(soundddack);
-                clip = AudioSystem.getClip();
-                clip.stop();
-                clip.open(ddack);
-                clip.start();
+                hitclip = AudioSystem.getClip();
+                hitclip.stop();
+                hitclip.open(ddack);
+                hitclip.start();
             }catch(Exception ex){
                 ex.printStackTrace();
             }
@@ -316,6 +330,9 @@ public class TAIGO {
                 case KeyEvent.VK_F:
                     outright = true;
                     playsound_ddack();
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    songnowtime = songlength;
                     break;
             }
         }
