@@ -9,6 +9,7 @@ import java.util.Iterator;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -39,16 +40,23 @@ public class TAIGO {
     AudioInputStream song;
     Clip songclip;
     Clip hitclip;
+
+    Image imageUPBG = new ImageIcon(TAIGO.class.getResource("./img/uppage.png")).getImage();
+    Image imageDOWNBG = new ImageIcon(TAIGO.class.getResource("./img/downpage.png")).getImage();
+    Image dongsmile = new ImageIcon(TAIGO.class.getResource("./img/dongsmile.png")).getImage();
+    Image ddacksmile = new ImageIcon(TAIGO.class.getResource("./img/ddacksmile.png")).getImage();
     
     public TAIGO(noteTape tape) {
         // blocks = new ArrayList<circle>(); //여기에 tape.block들어감
-        blocks = tape.blocks;
+        // blocks = tape.blocks;
+        blocks = tape.getBlocks();
 
         try{
             sounddung = new File("./src/Swing_javaclass/music/dung.wav");
             soundddack = new File("./src/Swing_javaclass/music/ddack.wav");
             // soundsong = new File("./src/Swing_javaclass/music/ROKI.wav"); // 여기에 tape.song들어감
-            soundsong = tape.song;
+            // soundsong = tape.song;
+            soundsong = tape.getSong();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -84,11 +92,14 @@ public class TAIGO {
             while(it.hasNext()) {
                 circle c = it.next();
 
-                c.x -= c.speed;
-                double predict = c.x + (c.r - 100) / 2;
+                //c.x-= c.speed;
+                c.setX(c.getX() - c.getSpeed());
+                //double predict = c.x + (c.r - 100) / 2;
+                double predict = c.getX() + (c.getR() - 100) / 2;
 
                 if( 330 <= predict && predict <= 370 ) {
-                    if(c.type % 2 == 1 && (inleft || inright)) {
+                    //if(c.type % 2 == 1 && (inleft || inright)) {
+                    if(c.getType() % 2 == 1 && (inleft || inright)) {
                         it.remove();
                         gauge++;
                         combo++;
@@ -97,7 +108,8 @@ public class TAIGO {
                         timecounter = 100;
                         // System.out.println("쿵" + gauge);                        
                     }
-                    else if(c.type % 2 == 0 && (outleft || outright)) {
+                    //else if(c.type % 2 == 0 && (outleft || outright)) {
+                    else if(c.getType() % 2 == 0 && (outleft || outright)) {
                         it.remove();
                         gauge++;
                         combo++;
@@ -155,8 +167,12 @@ public class TAIGO {
             int WIDTH = 1010;
             int HEIGHT = 720;
 
+            // 배경
+            g.drawImage(imageUPBG, 0, 0, WIDTH + 14, 205, null);
+            g.drawImage(imageDOWNBG, 0, 400, WIDTH + 14, HEIGHT - 400, null);
+
             //태고 노트
-            g.setColor(Color.darkGray);
+            g.setColor(new Color(44, 44, 44));
             g.fillRect(300, 200, WIDTH-300, 160);
             g.setColor(Color.black);
             g.drawRect(300, 200, WIDTH-300, 160);
@@ -179,10 +195,11 @@ public class TAIGO {
             g.drawRect(0, 200, 120, 50);
 
             //태고 게이지
-            g.setColor(Color.gray);
-            g.fillRect(450, 150, WIDTH-450, 50);
             g.setColor(Color.black);
+            g.fillRect(450, 150, WIDTH-450, 50);
+            g.setColor(Color.gray);
             g.fillRect(455, 155, WIDTH-510, 40);
+
             // combo에 따라 게이지 색깔 바꾸기
 
             if( gauge < 70 ){
@@ -190,7 +207,7 @@ public class TAIGO {
                 g.fillRect(455, 155, (WIDTH-510) * (gauge > 70 ? 70 : gauge) / 100, 40);
             }
             else if( gauge < 95 ){
-                g.setColor(Color.yellow);
+                g.setColor(Color.green);
                 g.fillRect(455, 155, (WIDTH-510) * (gauge > 95 ? 95 : gauge) / 100, 40);
             }
             else{
@@ -200,7 +217,6 @@ public class TAIGO {
 
             // 태고북 판정지점
             g.setColor(Color.gray);
-            // g.fillOval(320, 120, 160, 160);
             g.fillOval(320, 210, 140, 140);
 
             g.setColor(Color.darkGray);
@@ -215,30 +231,51 @@ public class TAIGO {
             g.fillOval(120, 210, 170, 170);
 
             //태고북 바깥 왼쪽
-            g.setColor(outleft ? Color.black : Color.blue);
+            g.setColor(outleft ? new Color(104, 192, 193) : new Color(255, 246, 219));  //파란색 아니면 베이지색
             g.fillArc(125, 215, 160, 160, 90, 180);
 
             //태고북 바깥 오른쪽
-            g.setColor(outright ? Color.black : Color.blue);
+            g.setColor(outright ? new Color(104, 192, 193) : new Color(255, 246, 219)); //파란색 아니면 베이지색
             g.fillArc(125, 215, 160, 160, 270, 180);
 
+            g.setColor(Color.BLACK);
+            g.fillRect(205, 215, 2, 160);
+
             //태고북 안쪽 왼쪽
-            g.setColor(inleft ? Color.black : Color.red);
+            g.setColor(inleft ? new Color(249, 72, 41) : new Color(255, 246, 219));     // 빨간색 아니면 베이지색
             g.fillArc(145, 235, 120, 120, 90, 180);
 
             //태고북 안쪽 오른쪽
-            g.setColor(inright ? Color.black : Color.red);
+            g.setColor(inright ? new Color(249, 72, 41) : new Color(255, 246, 219));    // 빨간색 아니면 베이지색
             g.fillArc(145, 235, 120, 120, 270, 180);
+
+            g.setColor(Color.BLACK);
+            g.drawOval(145, 235, 120, 120);
 
             // 태고 블럭노트
             for(int i=0; i < blocks.size(); i++){
                 circle c = blocks.get(i);
-                g.setColor(c.color);
-                g.fillOval(c.x, c.y, c.r, c.r);
+                g.setColor(Color.black);
+                //g.drawOval(c.x, c.y, c.r, c.r);
+                g.drawOval(c.getX(), c.getY(), c.getR(), c.getR());
+                g.setColor(Color.white);
+                //g.fillOval(c.x, c.y, c.r, c.r);
+                g.fillOval(c.getX(), c.getY(), c.getR(), c.getR());
+                g.setColor(Color.black);
+                //g.fillOval(c.x + 8, c.y + 8, c.r - 16, c.r - 16);
+                g.fillOval(c.getX() + 8, c.getY() + 8, c.getR() - 16, c.getR() - 16);
+                //g.setColor(c.color);
+                g.setColor(c.getColor());
+                //g.fillOval(c.x + 10, c.y + 10, c.r - 20, c.r - 20);
+                g.fillOval(c.getX() + 10, c.getY() + 10, c.getR() - 20, c.getR() - 20);
+
+                //g.drawImage((c.type % 2 == 1 ? dongsmile : ddacksmile), c.x + c.r/6 , c.y + c.r/3, c.r * 2/3, c.r/3, null);
+                g.drawImage((c.getType() % 2 == 1 ? dongsmile : ddacksmile), c.getX() + c.getR()/6 , c.getY() + c.getR()/3, c.getR() * 2/3, c.getR()/3, null);
 
                 g.setColor(c.color);
                 g.setFont(new Font("맑은 고딕", 1, 30));
-                g.drawString((c.type % 2 == 1 ? "쿵" : "딱"), c.x + (c.r / 2), 390);
+                //g.drawString((c.type % 2 == 1 ? "쿵" : "딱"), c.x + (c.r / 2), 390);
+                g.drawString((c.getType() % 2 == 1 ? "쿵" : "딱"), c.getX() + (c.getR() / 2), 390);
                 // g.fillRect(c.x + (c.r) / 2, 280, 20, 20);
             }
 
@@ -247,7 +284,7 @@ public class TAIGO {
             g.drawString("" + score, 30, 230);
 
             if(combo > 0) {
-                g.setColor(Color.yellow);
+                g.setColor(Color.orange);
                 g.setFont(new Font("맑은 고딕", 1, 80));
                 if(combo >= 100){
                     g.drawString("" + combo, 135, 320);
@@ -261,30 +298,36 @@ public class TAIGO {
             }
 
             if(hitNotice == 1) {
-                g.setColor(Color.yellow);
+                g.setColor(Color.orange);
+                g.fillOval(355, 130, 70, 70);
+                g.setColor(Color.darkGray);
                 g.setFont(new Font("맑은 고딕", 1, 30));
-                g.drawString("얼쑤", 360, 190);
+                g.drawString("얼쑤", 360, 180);
             }
             else if(hitNotice == 2) {
                 g.setColor(Color.gray);
+                g.fillOval(355, 130, 70, 70);
+                g.setColor(Color.white);
                 g.setFont(new Font("맑은 고딕", 1, 30));
-                g.drawString("좋다", 360, 190);
+                g.drawString("좋다", 360, 180);
             }
             else if(hitNotice == 3) {
-                g.setColor(Color.darkGray);
+                g.setColor(new Color(85, 119 ,255));
+                g.fillOval(355, 130, 70, 70);
+                g.setColor(Color.black);
                 g.setFont(new Font("맑은 고딕", 1, 30));
-                g.drawString("에구", 360, 190);
+                g.drawString("에구", 360, 180);
             }
 
             g.setColor(Color.black);
-            g.setFont(new Font("맑은 고딕", 1, 30));
-            g.drawString("ESC : 강제 중단", 10, HEIGHT / 2 + 100);
+            g.setFont(new Font("맑은 고딕", 1, 15));
+            g.drawString("ESC : 강제 중단", 10, 320);
             g.setColor(Color.black);
-            g.setFont(new Font("맑은 고딕", 1, 30));
-            g.drawString("A, F : 딱 (파란색)", 10, HEIGHT / 2 + 150);
+            g.setFont(new Font("맑은 고딕", 1, 15));
+            g.drawString("A, F : 딱 (파란색)", 10, 350);
             g.setColor(Color.black);
-            g.setFont(new Font("맑은 고딕", 1, 30));
-            g.drawString("S, D : 쿵 (빨간색)", 10, HEIGHT / 2 + 200);
+            g.setFont(new Font("맑은 고딕", 1, 15));
+            g.drawString("S, D : 쿵 (빨간색)", 10, 380);
         }
     }
 

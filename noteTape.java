@@ -7,10 +7,6 @@ public class noteTape {
     ArrayList<circle> blocks = new ArrayList<circle>();
     File song;
 
-    // public noteTape(File song, File note) {
-    //     this.song = song;
-    //     readNotetoTape(note);
-    // }
     public noteTape(File song) {
         this.song = song;
     }
@@ -18,14 +14,11 @@ public class noteTape {
     public noteTape(File song , ArrayList<circle> blocks) {
         this.song = song;
         this.blocks = blocks;
-        // readNotetoTape(note);
     }
 
     public void maketutorialnote() { // circle(int x, int y, int type)  type : 0 = 태고딱소, 1. 태고쿵소, 2. 태고딱대, 3. 태고쿵대
-        for(int i = 0; i < 10; i++) {
-            blocks.add(new circle(i*1460 + 1680, 4, i%2 == 1 ? 1 : 0));
-            blocks.add(new circle(i*1460 + 1760, 4, i%3 == 1 ? 0 : 1));
-            blocks.add(new circle(i*1460 + 1840, 4, i%4 == 1 ? 1 : 0));
+        for(int i = 0; i < 85; i++) {
+            blocks.add(new circle(i*160 + 1080, 4, i%4 == 1 || i%3 == 1? 0 : 1));
         }
 
         for(int i = 0; i < 40; i++) {
@@ -38,5 +31,13 @@ public class noteTape {
             }
             blocks.add(new circle(i * 80 + 21580, 4, i%3 == 1 || i%4 == 1 ? 0 : 1));
         }
+    }
+
+    public ArrayList<circle> getBlocks() {
+        return blocks;
+    }
+
+    public File getSong() {
+        return song;
     }
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -32,6 +33,8 @@ public class hitResult {
     Clip songclip;
     Clip hitclip;
 
+    Image resultBG = new ImageIcon(Index.class.getResource("./img/resultbg.png")).getImage();
+
     public hitResult(int score, int gauge) {
         donext = false;
 
@@ -46,13 +49,12 @@ public class hitResult {
         this.score = score;
         this.gauge = gauge;
         if(gauge >= 70){
-            if(score >= 50000) rank = "SSS";
-            else if(score >= 45000) rank = "SS";
-            else if(score >= 40000) rank = "S";
-            else if(score >= 35000) rank = "A";
-            else if(score >= 30000) rank = "B";
-            else if(score >= 25000) rank = "C";
-            else if(score >= 20000) rank = "D";
+            if(score >= 50000) rank = "SS";
+            else if(score >= 45000) rank = "S";
+            else if(score >= 40000) rank = "A";
+            else if(score >= 35000) rank = "B";
+            else if(score >= 30000) rank = "C";
+            else if(score >= 25000) rank = "D";
             else rank = "E";
         }
         else{
@@ -97,13 +99,34 @@ public class hitResult {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            g.setColor(Color.black);
-            g.setFont(new Font("맑은 고딕", 1, 40));
-            g.drawString("점수 : " + score, 450, 200);
+            int WIDTH = 1024;
+            int HEIGHT = 720;
+            
+            g.drawImage(resultBG, 0, 0, WIDTH, HEIGHT, null);
 
             g.setColor(Color.black);
             g.setFont(new Font("맑은 고딕", 1, 40));
-            g.drawString("게이지 : " + gauge, 450, 300);
+            g.drawString("점수 : " + score, 445, 200);
+
+
+            g.setColor(Color.gray);
+            g.fillRect(450, 255, WIDTH-600, 50);
+            g.setColor(Color.black);
+            g.fillRect(455, 260, WIDTH-610, 40);
+
+
+            if( gauge < 70 ){
+                g.setColor(Color.red);
+                g.fillRect(455, 260, (WIDTH-610) * (gauge > 70 ? 70 : gauge) / 100, 40);
+            }
+            else if( gauge < 95 ){
+                g.setColor(Color.green);
+                g.fillRect(455, 260, (WIDTH-610) * (gauge > 95 ? 95 : gauge) / 100, 40);
+            }
+            else{
+                g.setColor(Color.MAGENTA);
+                g.fillRect(455, 260, (WIDTH-610) * (gauge > 100 ? 100 : gauge) / 100, 40);
+            }
 
             g.setColor(Color.black);
             g.setFont(new Font("맑은 고딕", 1, 200));

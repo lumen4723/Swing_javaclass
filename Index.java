@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -43,8 +44,8 @@ public class Index {
     Clip songclip;
 
     noteTape playtape;
-
     ArrayList<String[]> list = new ArrayList<>();
+    Image indexBG = new ImageIcon(Index.class.getResource("./img/indexbg.png")).getImage();
     
     public Index() {
         try{
@@ -160,8 +161,48 @@ public class Index {
             int WIDTH = 1010;
             int HEIGHT = 710;
 
-            g.setColor(Color.BLUE);
+            Color nowindexColor;
+            Color previndexColor;
+            Color nextindexColor;
+
+            if(Integer.parseInt(list.get(nowindex)[1]) < 3) {
+                nowindexColor = new Color(0, 162, 232);
+            }
+            else if(Integer.parseInt(list.get(nowindex)[1]) < 6) {
+                nowindexColor = new Color(255, 211, 6);
+            }
+            else {
+                nowindexColor = new Color(254, 113, 71);
+            }
+
+            if(Integer.parseInt(list.get(previndex)[1]) < 3) {
+                previndexColor = new Color(0, 162, 232);
+            }
+            else if(Integer.parseInt(list.get(previndex)[1]) < 6) {
+                previndexColor = new Color(255, 211, 6);
+            }
+            else {
+                previndexColor = new Color(254, 113, 71);
+            }
+
+            if(Integer.parseInt(list.get(nextindex)[1]) < 3) {
+                nextindexColor = new Color(0, 162, 232);
+            }
+            else if(Integer.parseInt(list.get(nextindex)[1]) < 6) {
+                nextindexColor = new Color(255, 211, 6);
+            }
+            else {
+                nextindexColor = new Color(254, 113, 71);
+            }
+
+            // g.setColor(Color.gray); //배경색
+            // g.fillRect(0, 0, WIDTH, HEIGHT);
+            g.drawImage(indexBG, 0, 0, WIDTH, HEIGHT, null);
+
+            g.setColor(Color.black);
             g.fillRect((int)(WIDTH / 2) - 300, (int)(HEIGHT / 2) - 100, 600, 200);
+            g.setColor(nowindexColor);  //현재곡색
+            g.fillRect((int)(WIDTH / 2) - 295, (int)(HEIGHT / 2) - 95, 590, 190);
 
             g.setColor(Color.black);
             g.setFont(new Font("맑은 고딕", 1, 100));
@@ -171,15 +212,19 @@ public class Index {
             g.setFont(new Font("맑은 고딕", 1, 40));
             g.drawString("레벨 : " + level, (int)(WIDTH / 2) - 150, (int)(HEIGHT / 2) + 80);
 
-            g.setColor(Color.BLUE);
+            g.setColor(Color.BLACK); //이전곡색
             g.fillRect((int)(WIDTH / 2) - 200, (int)(HEIGHT / 2) - 250, 400, 100);
+            g.setColor(previndexColor); //이전곡색
+            g.fillRect((int)(WIDTH / 2) - 195, (int)(HEIGHT / 2) - 245, 390, 90);
 
             g.setColor(Color.black);
             g.setFont(new Font("맑은 고딕", 1, 60));
             g.drawString(prev, (int)(WIDTH / 2) - 100, (int)(HEIGHT / 2) - 175);
 
-            g.setColor(Color.BLUE);
+            g.setColor(Color.BLACK);
             g.fillRect((int)(WIDTH / 2) - 200, (int)(HEIGHT / 2) + 150, 400, 100);
+            g.setColor(nextindexColor); //다음곡색
+            g.fillRect((int)(WIDTH / 2) - 195, (int)(HEIGHT / 2) + 155, 390, 90);
 
             g.setColor(Color.black);
             g.setFont(new Font("맑은 고딕", 1, 60));
