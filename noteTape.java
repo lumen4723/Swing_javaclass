@@ -9,6 +9,7 @@ public class noteTape {
 
     public noteTape(File song) {
         this.song = song;
+        maketutorialnote();
     }
 
     public noteTape(File song , ArrayList<circle> blocks) {
@@ -18,7 +19,7 @@ public class noteTape {
 
     public void maketutorialnote() { // circle(int x, int y, int type)  type : 0 = 태고딱소, 1. 태고쿵소, 2. 태고딱대, 3. 태고쿵대
         for(int i = 0; i < 85; i++) {
-            blocks.add(new circle(i*160 + 1080, 4, i%4 == 1 || i%3 == 1? 0 : 1));
+            blocks.add(new circle(i*160 + 1080, 4, i%4 == 1 || i%3 == 1 ? (i%7 == 1 ? 2 : 0) : (i%7 == 1 ? 3 : 1)));
         }
 
         for(int i = 0; i < 40; i++) {

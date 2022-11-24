@@ -10,15 +10,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class TAIGO {
-    JFrame frame = new JFrame("Taigo");
+public class TAIGO extends MainDriver{
     int hitNotice = 0; // 0: none, 1: 얼쑤, 2: 좋다, 3: 에구
-
-    int WIDTH = 1024;
-    int HEIGHT = 720;
     int speed = 10;
     boolean outleft = false;
     boolean outright = false;
@@ -31,7 +26,6 @@ public class TAIGO {
 
     int songlength;
     int songnowtime = 0;
-
     File sounddung;
     File soundddack;
     File soundsong;
@@ -41,37 +35,28 @@ public class TAIGO {
     Clip songclip;
     Clip hitclip;
 
+    KeyListener keylistener = new GameKeyListner();
     Image imageUPBG = new ImageIcon(TAIGO.class.getResource("./img/uppage.png")).getImage();
     Image imageDOWNBG = new ImageIcon(TAIGO.class.getResource("./img/downpage.png")).getImage();
     Image dongsmile = new ImageIcon(TAIGO.class.getResource("./img/dongsmile.png")).getImage();
     Image ddacksmile = new ImageIcon(TAIGO.class.getResource("./img/ddacksmile.png")).getImage();
     
     public TAIGO(noteTape tape) {
-        // blocks = new ArrayList<circle>(); //여기에 tape.block들어감
-        // blocks = tape.blocks;
         blocks = tape.getBlocks();
-
         try{
             sounddung = new File("./src/Swing_javaclass/music/dung.wav");
             soundddack = new File("./src/Swing_javaclass/music/ddack.wav");
-            // soundsong = new File("./src/Swing_javaclass/music/ROKI.wav"); // 여기에 tape.song들어감
-            // soundsong = tape.song;
             soundsong = tape.getSong();
         }
         catch(Exception e){
             e.printStackTrace();
         }
 
-        frame.setSize(WIDTH, HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         JPanel panel = new Panel1();
-
         frame.getContentPane().add(panel);
         frame.setVisible(true);
-        frame.addKeyListener(new GameKeyListner());
+        frame.addKeyListener(keylistener);
         frame.setVisible(true);
-
     }
 
     public hitResult go() {
@@ -156,7 +141,9 @@ public class TAIGO {
             frame.repaint();
         }
 
-        frame.setVisible(false);
+        //frame.setVisible(false);
+        frame.getContentPane().removeAll();
+        frame.removeKeyListener(keylistener);
         return new hitResult(score, gauge);
     }
 
@@ -164,8 +151,8 @@ public class TAIGO {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            int WIDTH = 1010;
-            int HEIGHT = 720;
+            int WIDTH = MainDriver.frame.getWidth() - 10;
+            int HEIGHT = MainDriver.frame.getHeight();
 
             // 배경
             g.drawImage(imageUPBG, 0, 0, WIDTH + 14, 205, null);
@@ -299,21 +286,21 @@ public class TAIGO {
 
             if(hitNotice == 1) {
                 g.setColor(Color.orange);
-                g.fillOval(355, 130, 70, 70);
+                g.fillOval(355, 145, 70, 50);
                 g.setColor(Color.darkGray);
                 g.setFont(new Font("맑은 고딕", 1, 30));
                 g.drawString("얼쑤", 360, 180);
             }
             else if(hitNotice == 2) {
                 g.setColor(Color.gray);
-                g.fillOval(355, 130, 70, 70);
+                g.fillOval(355, 145, 70, 50);
                 g.setColor(Color.white);
                 g.setFont(new Font("맑은 고딕", 1, 30));
                 g.drawString("좋다", 360, 180);
             }
             else if(hitNotice == 3) {
                 g.setColor(new Color(85, 119 ,255));
-                g.fillOval(355, 130, 70, 70);
+                g.fillOval(355, 145, 70, 50);
                 g.setColor(Color.black);
                 g.setFont(new Font("맑은 고딕", 1, 30));
                 g.drawString("에구", 360, 180);

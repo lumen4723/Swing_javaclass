@@ -10,23 +10,16 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Index {
-    JFrame frame;
+public class Index extends MainDriver{
     JPanel panel;
+    int WIDTH = MainDriver.frame.getWidth();
+    int HEIGHT = MainDriver.frame.getHeight();
 
-    int WIDTH = 1024;
-    int HEIGHT = 720;
-
-    int playindex = -1;
     String level = "loading";
-
-    int songlength = 0;
-    int songnowtime = 0;
     boolean ischanged = false;
-
+    int playindex = -1;
     int nowindex = 0;
     int previndex = 0;
     int nextindex = 0;
@@ -34,6 +27,8 @@ public class Index {
     String prev = "loading";
     String next = "loading";
 
+    int songlength = 0;
+    int songnowtime = 0;
     File sounddung;
     File soundddack;
     File song;
@@ -42,7 +37,8 @@ public class Index {
     AudioInputStream mainsong;
     Clip hitclip;
     Clip songclip;
-
+    
+    KeyListener keylistener = new GameKeyListner();
     noteTape playtape;
     ArrayList<String[]> list = new ArrayList<>();
     Image indexBG = new ImageIcon(Index.class.getResource("./img/indexbg.png")).getImage();
@@ -56,17 +52,6 @@ public class Index {
             e.printStackTrace();
         }
 
-        frame = new JFrame("Taigo");
-        panel = new panel3();
-
-        frame.setSize(WIDTH, HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.getContentPane().add(panel);
-        frame.setVisible(true);
-        frame.addKeyListener(new GameKeyListner());
-        frame.setVisible(true);
-
         list.add(new String[]{"tutorial", "1"});
         list.add(new String[]{"ROKI", "4"});
         list.add(new String[]{"bad-elixir", "7"});
@@ -77,6 +62,12 @@ public class Index {
         level = list.get(nowindex)[1];
         previndex = nowindex - 1 < 0 ? list.size() - 1 : nowindex - 1;
         nextindex = nowindex + 1 > list.size() - 1 ? 0 : nowindex + 1;
+
+        panel = new panel3();
+        frame.getContentPane().add(panel);
+        frame.setVisible(true);
+        frame.addKeyListener(keylistener);
+        frame.setVisible(true);
     }
 
     public noteTape start() {
@@ -85,15 +76,12 @@ public class Index {
 
         while(true) {
             if(playindex == 0) {
-                frame.setVisible(false);
                 song = new File("./src/Swing_javaclass/music/tutorial.wav");
                 playtape = new noteTape(song);
-                playtape.maketutorialnote();
                 break;
             }
 
             if(playindex == 1) {
-                frame.setVisible(false);
                 song = new File("./src/Swing_javaclass/music/ROKI.wav");
                 for(int i = 0; i < 100; i++) {
                     blocks.add(new circle(i*300 + 300, 4 + i%2, i%4));
@@ -103,10 +91,9 @@ public class Index {
             }
 
             if(playindex == 2) {
-                frame.setVisible(false);
                 song = new File("./src/Swing_javaclass/music/bad-elixir.wav");
                 for(int i = 0; i < 100; i++) {
-                    blocks.add(new circle(i*300 + 300, 4 + i%2, i%4));
+                    blocks.add(new circle(i*300 + 300, 4 + (i * i)%3, (i * i)%4));
                 }
                 playtape = new noteTape(song, blocks);
                 break;
@@ -114,7 +101,6 @@ public class Index {
 
             previndex = nowindex - 1 < 0 ? list.size() - 1 : nowindex - 1;
             nextindex = nowindex + 1 > list.size() - 1 ? 0 : nowindex + 1;
-
             now = list.get(nowindex)[0];
             prev = list.get(previndex)[0];
             next = list.get(nextindex)[0];
@@ -124,6 +110,7 @@ public class Index {
             }
             if(songnowtime == songlength || ischanged) {
                 ischanged = false;
+
                 try{
                     song = new File("./src/Swing_javaclass/music/" + now + ".wav");
                     mainsong = AudioSystem.getAudioInputStream(song);
@@ -131,6 +118,7 @@ public class Index {
                     songclip.stop();
                     songclip.open(mainsong);
                     songclip.start();
+
                     songlength = (int)songclip.getMicrosecondLength();
                     songnowtime = (int)songclip.getMicrosecondPosition();
                 }
@@ -151,6 +139,9 @@ public class Index {
         }
         
         songclip.stop();
+
+        frame.getContentPane().removeAll();
+        frame.removeKeyListener(keylistener);
         return playtape;
     }
 
@@ -158,8 +149,8 @@ public class Index {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            int WIDTH = 1010;
-            int HEIGHT = 710;
+            int WIDTH = MainDriver.frame.getWidth();
+            int HEIGHT = MainDriver.frame.getHeight();
 
             Color nowindexColor;
             Color previndexColor;
@@ -195,8 +186,7 @@ public class Index {
                 nextindexColor = new Color(254, 113, 71);
             }
 
-            // g.setColor(Color.gray); //배경색
-            // g.fillRect(0, 0, WIDTH, HEIGHT);
+            // 배경
             g.drawImage(indexBG, 0, 0, WIDTH, HEIGHT, null);
 
             g.setColor(Color.black);

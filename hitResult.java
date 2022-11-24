@@ -8,18 +8,14 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class hitResult {
-    JFrame frame = new JFrame("Taigo");
-    JPanel panel = new panel2();
+public class hitResult extends MainDriver{
+    JPanel panel;
+    int WIDTH = MainDriver.frame.getWidth();
+    int HEIGHT = MainDriver.frame.getHeight();
 
-    int WIDTH = 1024;
-    int HEIGHT = 720;
-
-    boolean donext = false;
-    
+    boolean donext;
     int score;
     int gauge;
     String rank;
@@ -33,6 +29,7 @@ public class hitResult {
     Clip songclip;
     Clip hitclip;
 
+    KeyListener keylistener = new GameKeyListner();
     Image resultBG = new ImageIcon(Index.class.getResource("./img/resultbg.png")).getImage();
 
     public hitResult(int score, int gauge) {
@@ -63,12 +60,10 @@ public class hitResult {
     }
 
     public void show() {
-        frame.setSize(WIDTH, HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        panel = new panel2();
         frame.getContentPane().add(panel);
         frame.setVisible(true);
-        frame.addKeyListener(new GameKeyListner());
+        frame.addKeyListener(keylistener);
         frame.setVisible(true);
 
         try{
@@ -81,11 +76,7 @@ public class hitResult {
             ex.printStackTrace();
         }
 
-        while(true) {
-            if(donext) {
-                frame.setVisible(false);
-                break;
-            }
+        while(!donext) {
 
             try {
                 Thread.sleep(100);
@@ -93,14 +84,17 @@ public class hitResult {
                 e.printStackTrace();
             }
         }
+
+        frame.getContentPane().removeAll();
+        frame.removeKeyListener(keylistener);
     }
 
     class panel2 extends JPanel {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            int WIDTH = 1024;
-            int HEIGHT = 720;
+            int WIDTH = MainDriver.frame.getWidth();
+            int HEIGHT = MainDriver.frame.getHeight();
             
             g.drawImage(resultBG, 0, 0, WIDTH, HEIGHT, null);
 
