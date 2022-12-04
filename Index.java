@@ -32,11 +32,14 @@ public class Index extends MainDriver{
     File sounddung;
     File soundddack;
     File song;
+    File startsound;
     AudioInputStream dung;
     AudioInputStream ddack;
     AudioInputStream mainsong;
+    AudioInputStream start;
     Clip hitclip;
     Clip songclip;
+    Clip startclip;
     
     KeyListener keylistener = new GameKeyListner();
     noteTape playtape;
@@ -47,6 +50,7 @@ public class Index extends MainDriver{
         try{
             sounddung = new File("./src/Swing_javaclass/music/dung.wav");
             soundddack = new File("./src/Swing_javaclass/music/ddack.wav");
+            startsound = new File("./src/Swing_javaclass/music/selectsong.wav");
         }
         catch(Exception e){
             e.printStackTrace();
@@ -70,9 +74,18 @@ public class Index extends MainDriver{
         frame.setVisible(true);
     }
 
-    public noteTape start() {
+    public noteTape show() {
         ArrayList<circle> blocks = new ArrayList<circle>();
         songnowtime = 0;
+
+        try {
+            start = AudioSystem.getAudioInputStream(startsound);
+            startclip = AudioSystem.getClip();
+            startclip.open(start);
+            startclip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         while(true) {
             if(playindex == 0) {
@@ -81,7 +94,7 @@ public class Index extends MainDriver{
                 break;
             }
 
-            if(playindex == 1) {
+            else if(playindex == 1) {
                 song = new File("./src/Swing_javaclass/music/ROKI.wav");
                 for(int i = 0; i < 100; i++) {
                     blocks.add(new circle(i*300 + 300, 4 + i%2, i%4));
@@ -90,7 +103,7 @@ public class Index extends MainDriver{
                 break;
             }
 
-            if(playindex == 2) {
+            else if(playindex == 2) {
                 song = new File("./src/Swing_javaclass/music/bad-elixir.wav");
                 for(int i = 0; i < 100; i++) {
                     blocks.add(new circle(i*300 + 300, 4 + (i * i)%3, (i * i)%4));
@@ -138,6 +151,7 @@ public class Index extends MainDriver{
             frame.repaint();
         }
         
+        startclip.stop();
         songclip.stop();
 
         frame.getContentPane().removeAll();

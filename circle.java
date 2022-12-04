@@ -2,6 +2,8 @@ package Swing_javaclass;
 
 import java.awt.*;
 
+import javax.swing.ImageIcon;
+
 public class circle {
     int x;
     int y;
@@ -9,6 +11,8 @@ public class circle {
     int speed;
     int type;
     Color color;
+    Image shape;
+
 
     public circle(int x, int speed, int type) {
         this.x = x;         // x시작좌표
@@ -17,6 +21,10 @@ public class circle {
         r = type < 2 ? 80 : 140; // 지름
         y = type < 2 ? 240 : 210; // y좌표
         color = type % 2 == 1 ? new Color(249, 72, 41) : new Color(104, 192, 193); // 색깔
+        if(type == 0) shape = new ImageIcon(Index.class.getResource("./img/ddack.png")).getImage();
+        else if(type == 1) shape = new ImageIcon(Index.class.getResource("./img/dung.png")).getImage();
+        else if(type == 2) shape = new ImageIcon(Index.class.getResource("./img/big_ddack.png")).getImage();
+        else if(type == 3) shape = new ImageIcon(Index.class.getResource("./img/big_dung.png")).getImage();
     }
 
     public int getX() {
@@ -65,5 +73,9 @@ public class circle {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Image getShape() {
+        return shape;
     }
 }
