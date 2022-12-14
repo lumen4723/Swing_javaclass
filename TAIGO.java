@@ -89,7 +89,7 @@ public class TAIGO extends MainDriver{
                     else {
                         continue;
                     }
-                    gauge++;
+                    gauge = ++gauge > 100 ? 100 : gauge;
                     combo++;
                     hitNotice = 340 <= predict && predict <= 360 ? 0 : 1;
                     score += hitNotice == 0 ? 500 : 250;

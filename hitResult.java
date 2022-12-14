@@ -73,8 +73,8 @@ public class hitResult extends MainDriver{
 
         while(!donext) {
             actgauge = actgauge + 1 < gauge ? actgauge + 1 : gauge;
-            actscore = actscore * 1.2 < score ? (int)(actscore * 1.2) : score;
-            if(actgauge >= 70){
+            actscore = actscore + 1000 < score ? actscore + 1000 : score;
+            if(gauge >= 70){
                 if(actscore >= 50000) rank = "SS";
                 else if(actscore >= 45000) rank = "S";
                 else if(actscore >= 40000) rank = "A";
