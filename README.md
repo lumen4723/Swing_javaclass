@@ -16,4 +16,4 @@
 
 ## 시연 화면
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/c218662e-b55c-4b71-8000-60884388f140/4a1e12f4-3362-40ef-9189-793a5ee53ac1/Untitled.png)
+![taigo](./taigo.png)
